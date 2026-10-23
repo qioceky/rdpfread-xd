@@ -214,10 +214,10 @@ object ConnectionLog {
             emptyList()
         }
         if (rawLines.isEmpty()) {
-            return "=== LOG XYDESK ===\n1. [Info] Belum ada catatan aktivitas sesi."
+            return "=== LOG RDPFREAD ===\n1. [Info] Belum ada catatan aktivitas sesi."
         }
         return buildString {
-            appendLine("=== LOG XYDESK (${rawLines.size} langkah tercatat) ===")
+            appendLine("=== LOG RDPFREAD (${rawLines.size} langkah tercatat) ===")
             var index = 1
             for (raw in rawLines) {
                 val singleLines = raw.lines()

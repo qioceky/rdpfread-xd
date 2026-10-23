@@ -1040,7 +1040,7 @@ private fun AboutSection() {
 
         // ---- Katalog Modul Native (.so), Library & Driver (.dll / .sys) Versi XyDesk ----
         XyCard {
-            XySectionLabel(xy("MODUL NATIVE (.SO) & DRIVER (.DLL / .SYS) XYDESK", "XYDESK NATIVE (.SO) & DRIVER (.DLL / .SYS) STACK"))
+            XySectionLabel(xy("MODUL NATIVE (.SO) & DRIVER (.DLL / .SYS)", "NATIVE (.SO) & DRIVER (.DLL / .SYS) STACK"))
             Text(
                 xy(
                     "Seluruh pustaka inti Android JNI dan driver Windows Host dikemas dengan build khusus untuk latensi terendah (60–120 FPS).",
