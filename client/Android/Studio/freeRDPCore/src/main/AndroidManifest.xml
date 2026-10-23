@@ -41,7 +41,7 @@
 
         <provider
             android:name=".utils.ClipboardImageProvider"
-            android:authorities="com.freerdp.freerdpcore.clipboard"
+            android:authorities="id.rdpfread.remote.clipboard"
             android:exported="false"
             android:grantUriPermissions="true" />
 
