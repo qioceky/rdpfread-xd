@@ -914,6 +914,8 @@ private fun ColumnScope.XyHomeMenuBody(
                 icon = XyIcons.Folder,
                 compact = true,
             )
+        }
+    }
     Spacer(Modifier.weight(1f))
     Text(
         version,
@@ -1070,6 +1072,10 @@ private fun DevicesScreen(
                 )
             }
 
+            XyTopBar(
+                title = xy("Perangkat", "Devices"),
+                onBack = null,
+                actions = {
                     XyIconPill(
                         XyIcons.Grid,
                         {

@@ -1458,6 +1458,8 @@ fun AddDeviceScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    }
+                }
                 XyToggleRow(
                     title = xy("Clipboard", "Clipboard"),
                     checked = options.clipboard,
