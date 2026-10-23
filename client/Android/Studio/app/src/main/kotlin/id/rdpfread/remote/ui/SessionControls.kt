@@ -376,7 +376,7 @@ fun SessionControls(
             lines += "Antrean flush: rata-rata %.1f, puncak %d".format(telemetry.queueDepth, telemetry.queuePeak)
         }
         cm?.setPrimaryClip(
-            ClipData.newPlainText("XyDesk Remote", lines.joinToString("\n"))
+            ClipData.newPlainText("RDPfread", lines.joinToString("\n"))
         )
         notice.show(xyNow("Info teknis tersalin", "Technical info copied"))
     }
@@ -391,7 +391,7 @@ fun SessionControls(
     fun exportHudLayoutToClipboard() {
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         val json = HudKey.exportLayoutJson(keys)
-        cm?.setPrimaryClip(ClipData.newPlainText("XyDesk HUD Layout", json))
+        cm?.setPrimaryClip(ClipData.newPlainText("RDPfread HUD Layout", json))
         notice.show(xyNow("Layout tombol JSON disalin ke clipboard", "Button layout JSON copied to clipboard"))
     }
 
@@ -2318,8 +2318,8 @@ private fun InputTab(
         val reconnPrefs = remember { SessionPrefs(reconnContext) }
         PanelHint(
             xy(
-                "XyDesk mencoba sambung ulang selama durasi ini, termasuk di latar. Setelah lewat, retry berhenti.",
-                "XyDesk keeps retrying for this window, even in background. After it ends, retries stop.",
+                "RDPfread mencoba sambung ulang selama durasi ini, termasuk di latar. Setelah lewat, retry berhenti.",
+                "RDPfread keeps retrying for this window, even in background. After it ends, retries stop.",
             ),
         )
         var windowHours by remember { mutableStateOf(reconnPrefs.autoReconnectHours) }
@@ -2639,8 +2639,8 @@ private fun SessionTab(
     section("perekaman-lokal-pc-ke-hp",xy("Perekaman lokal · PC ke HP", "Local recording · PC to phone"), advanced = true) {
             PanelHint(
                 xy(
-                    "Desktop PC + audio direkam ke MP4 di Movies/XyDesk. Layar HP tidak pernah ikut terekam.",
-                    "PC desktop + audio are recorded to one MP4 in Movies/XyDesk. Your phone screen is never captured.",
+                    "Desktop PC + audio direkam ke MP4 di Movies/RDPfread. Layar HP tidak pernah ikut terekam.",
+                    "PC desktop + audio are recorded to one MP4 in Movies/RDPfread. Your phone screen is never captured.",
                 ),
             )
             XyPillButton(
@@ -3821,7 +3821,7 @@ private fun MonitorAndUserGridModal(
                             value = customUsername,
                             onValueChange = { customUsername = it },
                             label = xy("Username Windows", "Windows Username"),
-                            hint = "runneradmin / Administrator / XyDesk",
+                            hint = "runneradmin / Administrator",
                         )
                         XyField(
                             value = customPassword,

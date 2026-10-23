@@ -606,9 +606,9 @@ class SessionSurfaceController(private val activity: Activity) : GraphicsSink {
         val src = bitmap ?: return@withContext null
         val shot = runCatching { synchronized(src) { src.copy(Bitmap.Config.ARGB_8888, false) } }
             .getOrNull() ?: return@withContext null
-        val fileName = "XyDesk-PC-${System.currentTimeMillis()}.png"
+        val fileName = "RDPfread-PC-${System.currentTimeMillis()}.png"
         try {
-            // Android 10+ (API 29): simpan ke Pictures/XyDesk lewat MediaStore
+            // Android 10+ (API 29): simpan ke Pictures/RDPfread lewat MediaStore
             // supaya screenshot muncul di galeri. Sebelumnya masuk ke
             // getExternalFilesDir()/screenshots — folder privat app yang tidak
             // terlihat di galeri dan ikut terhapus saat app di-uninstall.
@@ -619,7 +619,7 @@ class SessionSurfaceController(private val activity: Activity) : GraphicsSink {
                     put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
                     put(
                         MediaStore.MediaColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_PICTURES}/XyDesk",
+                        "${Environment.DIRECTORY_PICTURES}/RDPfread",
                     )
                     put(MediaStore.MediaColumns.IS_PENDING, 1)
                 }

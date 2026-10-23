@@ -101,10 +101,12 @@ object XyText {
         "about.license.body" to mapOf(
             XyLang.ID to "FreeRDP — Apache License 2.0\n" +
                 "Copyright (C) 2012-2026 FreeRDP contributors.\n\n" +
+                "RDPfread XD — fork of XyDesk Remote (Apache-2.0).\n" +
                 "XyDesk Remote — \u00a9 XyVerse.\n" +
                 "Font: Space Grotesk & Inter (SIL Open Font License 1.1).",
             XyLang.EN to "FreeRDP — Apache License 2.0\n" +
                 "Copyright (C) 2012-2026 FreeRDP contributors.\n\n" +
+                "RDPfread XD — fork of XyDesk Remote (Apache-2.0).\n" +
                 "XyDesk Remote — \u00a9 XyVerse.\n" +
                 "Fonts: Space Grotesk & Inter (SIL Open Font License 1.1).",
         ),
@@ -137,8 +139,8 @@ object XyText {
             XyLang.EN to "Thanks",
         ),
         "about.thanks" to mapOf(
-            XyLang.ID to "Terima kasih sudah memakai XyDesk Remote.",
-            XyLang.EN to "Thanks for using XyDesk Remote.",
+            XyLang.ID to "Terima kasih sudah memakai RDPfread XD.",
+            XyLang.EN to "Thanks for using RDPfread XD.",
         ),
 
         // ---- panel sesi ----

@@ -382,7 +382,7 @@ data class HudKey(
         )
 
         fun exportLayoutJson(list: List<HudKey>): String = JSONObject().apply {
-            put("app", "XyDesk Remote")
+            put("app", "RDPfread XD")
             put("version", 1)
             val arr = JSONArray()
             list.take(36).forEach { arr.put(it.toJson()) }

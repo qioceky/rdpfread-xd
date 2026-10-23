@@ -1017,7 +1017,7 @@ private fun AboutSection() {
         XyCard {
             XyLogo(modifier = Modifier.height(38.dp).fillMaxWidth(0.16f))
             Spacer(Modifier.height(12.dp))
-            Text(xy("XyDesk Remote", "XyDesk Remote"), style = MaterialTheme.typography.headlineSmall)
+            Text(xy("RDPfread", "RDPfread"), style = MaterialTheme.typography.headlineSmall)
             Text(
                 t("app.tagline"),
                 style = MaterialTheme.typography.bodyMedium,
@@ -1043,8 +1043,8 @@ private fun AboutSection() {
             XySectionLabel(xy("MODUL NATIVE (.SO) & DRIVER (.DLL / .SYS) XYDESK", "XYDESK NATIVE (.SO) & DRIVER (.DLL / .SYS) STACK"))
             Text(
                 xy(
-                    "Seluruh pustaka inti Android JNI dan driver Windows Host dikemas dengan build khusus XyDesk untuk latensi terendah (60–120 FPS).",
-                    "All Android JNI core libraries and Windows Host drivers are packaged with custom XyDesk builds for ultra-low latency (60–120 FPS).",
+                    "Seluruh pustaka inti Android JNI dan driver Windows Host dikemas dengan build khusus untuk latensi terendah (60–120 FPS).",
+                    "All Android JNI core libraries and Windows Host drivers are packaged with custom builds for ultra-low latency (60–120 FPS).",
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1083,10 +1083,10 @@ private fun AboutSection() {
         XyCard {
             Text(
                 xy(
-                    "XyDesk Remote dibangun di atas FreeRDP (Apache License 2.0). " +
+                    "RDPfread XD adalah fork XyDesk Remote, dibangun di atas FreeRDP (Apache License 2.0). " +
                         "Kode aplikasi milik XyVerse. Daftar perubahan terhadap tree " +
                         "FreeRDP ada di XYDESK-REMOTE-NOTICE.md.",
-                    "XyDesk Remote is built on FreeRDP (Apache License 2.0). The app " +
+                    "RDPfread XD is a fork of XyDesk Remote, built on FreeRDP (Apache License 2.0). The app " +
                         "code belongs to XyVerse. The list of changes to the FreeRDP " +
                         "tree is in XYDESK-REMOTE-NOTICE.md.",
                 ),

@@ -256,7 +256,7 @@ class XySessionService : Service() {
         // Ikon besar di sisi kiri. Dipakai PNG (bukan vektor) karena
         // BitmapFactory tidak membaca drawable vektor.
         runCatching {
-            BitmapFactory.decodeResource(resources, id.rdpfread.remote.R.drawable.xy_mark_white)
+            BitmapFactory.decodeResource(resources, id.rdpfread.remote.R.drawable.rdpfread_mark_white)
         }.getOrNull()?.let { builder.setLargeIcon(it) }
 
         // Layar kunci tidak menampilkan host yang sedang disambungkan.

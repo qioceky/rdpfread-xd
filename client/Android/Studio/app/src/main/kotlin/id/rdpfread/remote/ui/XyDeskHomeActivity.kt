@@ -279,7 +279,7 @@ class XyDeskHomeActivity : ComponentActivity() {
                         cm?.setPrimaryClip(ClipData.newPlainText("XyDesk Share", sharedText))
                         sharedFileBanner.value = xyNow(
                             "Teks disalin ke clipboard & disimpan sebagai '${noteFile.name}' di Drive XyDesk.",
-                            "Text copied to clipboard & saved as '${noteFile.name}' in the XyDesk drive.",
+                            "Text copied to clipboard & saved as '${noteFile.name}' in the RDPfread drive.",
                         )
                     }
                 }

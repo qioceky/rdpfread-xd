@@ -2230,8 +2230,8 @@ private fun StorageAccessRow() {
         Spacer(Modifier.height(4.dp))
         Text(
             xy(
-                "Cara transfer file di PC: Buka File Explorer Windows -> This PC -> klik drive 'XyDesk on Android' (atau ketik \\\\tsclient\\XyDesk di address bar) untuk salin/tempel file dua arah.",
-                "How to transfer files on PC: Open Windows File Explorer -> This PC -> open 'XyDesk on Android' drive (or type \\\\tsclient\\XyDesk in the address bar) for two-way file copy/paste.",
+                "Cara transfer file di PC: Buka File Explorer Windows -> This PC -> klik drive 'XyDesk on Android' (atau ketik \\\\tsclient\\RDPfread di address bar) untuk salin/tempel file dua arah.",
+                "How to transfer files on PC: Open Windows File Explorer -> This PC -> open 'XyDesk on Android' drive (or type \\\\tsclient\\RDPfread in the address bar) for two-way file copy/paste.",
             ),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.primary,

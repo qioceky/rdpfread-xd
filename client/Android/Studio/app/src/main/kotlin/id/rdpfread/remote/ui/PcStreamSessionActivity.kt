@@ -892,7 +892,7 @@ class PcStreamSessionActivity : ComponentActivity() {
                     value = pin,
                     onValueChange = { pin = it.filter(Char::isDigit).take(6) },
                     label = xy("PIN Pairing (6 Digit)", "Pairing PIN (6 Digits)"),
-                    hint = xy("PIN 6 digit dari host XyDesk", "6-digit PIN from the XyDesk host"),
+                    hint = xy("PIN 6 digit dari host PC", "6-digit PIN from the PC host"),
                     isPassword = true,
                     keyboardType = KeyboardType.NumberPassword,
                 )
@@ -933,8 +933,8 @@ class PcStreamSessionActivity : ComponentActivity() {
                     Spacer(Modifier.height(6.dp))
                     Text(
                         xy(
-                            "Host tidak merespons pairing. Pastikan aplikasi host XyDesk aktif di PC, lalu coba lagi.",
-                            "Host is not responding to pairing. Make sure the XyDesk host app is running on the PC, then try again.",
+                            "Host tidak merespons pairing. Pastikan aplikasi host aktif di PC, lalu coba lagi.",
+                            "Host is not responding to pairing. Make sure the host app is running on the PC, then try again.",
                         ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,

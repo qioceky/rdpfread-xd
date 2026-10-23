@@ -479,7 +479,7 @@ fun DevicePreviewArt(
             )
         } else if (isXyRdpDevice) {
             Image(
-                painter = painterResource(R.drawable.xyrdp_banner),
+                painter = painterResource(R.drawable.rdpfread_banner),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

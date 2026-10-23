@@ -124,7 +124,7 @@ fun XySshTerminalScreen(
     var hostKeyFp by remember { mutableStateOf("") }
     var terminalBuffer by remember {
         mutableStateOf(
-            "=== XyDesk Remote · Native SSH-2 Terminal ===\n" +
+            "=== RDPfread · Native SSH-2 Terminal ===\n" +
                 "Protokol : SSH-2.0 (DH-Group14-SHA256 · AES-128-CTR · HMAC-SHA256)\n" +
                 "Target   : Linux Polos XyRDP / Ubuntu / Debian / VPS Server\n\n",
         )

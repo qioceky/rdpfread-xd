@@ -67,8 +67,8 @@ internal object RdpErrors {
             )
 
             code == "connect_failed" && (m.contains("wrong password") || m.contains("password supplied")) -> Pair(
-                "XyDesk melaporkan kata sandi salah. Periksa kata sandi akun remote.",
-                "XyDesk reported a wrong password. Check the remote account password.",
+                "RDPfread melaporkan kata sandi salah. Periksa kata sandi akun remote.",
+                "RDPfread reported a wrong password. Check the remote account password.",
             )
 
             code == "connect_failed" && m.contains("account locked") -> Pair(
@@ -89,8 +89,8 @@ internal object RdpErrors {
 
             code == "connect_failed" && (m.contains("dns") || m.contains("could not be resolved") ||
                 m.contains("host name was not found")) -> Pair(
-                "XyDesk tidak dapat menemukan nama host. Periksa DNS atau gunakan alamat host yang benar.",
-                "XyDesk could not resolve the host name. Check DNS or use the correct host address.",
+                "RDPfread tidak dapat menemukan nama host. Periksa DNS atau gunakan alamat host yang benar.",
+                "RDPfread could not resolve the host name. Check DNS or use the correct host address.",
             )
 
             code == "connect_failed" && (m.contains("logon failed") || m.contains("logon failure") ||
@@ -107,9 +107,9 @@ internal object RdpErrors {
             )
 
             code == "connect_failed" -> Pair(
-                "XyDesk gagal menyelesaikan jabat tangan (handshake). Periksa Detail, " +
+                "RDPfread gagal menyelesaikan jabat tangan (handshake). Periksa Detail, " +
                     "jaringan, host, dan konfigurasi RDP.",
-                "XyDesk did not complete the handshake. Check Details, " +
+                "RDPfread did not complete the handshake. Check Details, " +
                     "the network, host, and RDP configuration.",
             )
 

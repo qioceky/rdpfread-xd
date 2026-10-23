@@ -69,7 +69,7 @@ internal fun postDisconnectNotification(context: Context, deviceLabel: String) {
     // Sama seperti XySessionService: BitmapFactory tidak membaca vektor, tapi
     // resource ini PNG di drawable-nodpi.
     runCatching {
-        BitmapFactory.decodeResource(context.resources, id.rdpfread.remote.R.drawable.xy_mark_white)
+        BitmapFactory.decodeResource(context.resources, id.rdpfread.remote.R.drawable.rdpfread_mark_white)
     }.getOrNull()?.let { builder.setLargeIcon(it) }
     nm.notify(DISCONNECT_NOTIF_ID, builder.build())
 }

@@ -1650,8 +1650,8 @@ fun XyDeskSessionScreen(
                         }
                         notice.show(
                             xyNow(
-                                "Screenshot disimpan ke Pictures/XyDesk",
-                                "Screenshot saved to Pictures/XyDesk",
+                                "Screenshot disimpan ke Pictures/RDPfread",
+                                "Screenshot saved to Pictures/RDPfread",
                             ),
                         )
                         val send = Intent(Intent.ACTION_SEND).apply {
@@ -2265,7 +2265,7 @@ fun XyDeskSessionScreen(
             ConnectionLog.formattedXyDeskLog(context.applicationContext, 80)
         }
         LogSheet(
-            title = xy("Log XyDesk", "XyDesk Log"),
+            title = xy("Log RDPfread", "RDPfread Log"),
             body = logBody,
             onDismiss = { showLog = false },
         )

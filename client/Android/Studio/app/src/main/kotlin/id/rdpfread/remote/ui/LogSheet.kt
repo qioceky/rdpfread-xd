@@ -106,13 +106,13 @@ internal fun LogSheet(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             XyPillButton(
-                text = xy("Salin Log XyDesk", "Copy XyDesk Log"),
+                text = xy("Salin Log RDPfread", "Copy RDPfread Log"),
                 onClick = {
                     val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-                    cm?.setPrimaryClip(ClipData.newPlainText("XyDesk Log", body))
+                    cm?.setPrimaryClip(ClipData.newPlainText("RDPfread Log", body))
                     Toast.makeText(
                         context,
-                        xyNow("Log XyDesk disalin ke clipboard", "XyDesk Log copied to clipboard"),
+                        xyNow("Log RDPfread disalin ke clipboard", "RDPfread Log copied to clipboard"),
                         Toast.LENGTH_SHORT,
                     ).show()
                 },

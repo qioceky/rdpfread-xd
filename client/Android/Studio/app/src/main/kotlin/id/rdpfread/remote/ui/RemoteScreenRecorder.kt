@@ -79,7 +79,7 @@ internal class RemoteScreenRecorder(
             return true
         }
         return try {
-            worker = Thread({ recordLoop() }, "XyDesk-PC-Recorder").apply {
+            worker = Thread({ recordLoop() }, "RDPfread-PC-Recorder").apply {
                 // Di atas normal, bukan di bawah. Thread ini punya tenggat 33ms
                 // per frame; kalau diprioritaskan di bawah thread UI dan decoder,
                 // HP yang sedang sibuk akan membuatnya kehilangan jadwal frame
@@ -384,12 +384,12 @@ internal class RemoteScreenRecorder(
     }
 
     private fun publishVideo(tempFile: File): String {
-        val fileName = "XyDesk-PC-${System.currentTimeMillis()}.mp4"
+        val fileName = "RDPfread-PC-${System.currentTimeMillis()}.mp4"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
                 put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MOVIES}/XyDesk")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MOVIES}/RDPfread")
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
             val resolver = appContext.contentResolver
@@ -402,14 +402,14 @@ internal class RemoteScreenRecorder(
                 val ready = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }
                 check(resolver.update(uri, ready, null, null) > 0) { "Unable to publish the MP4 in MediaStore" }
                 completed = true
-                return "Movies/XyDesk/$fileName"
+                return "Movies/RDPfread/$fileName"
             } finally {
                 if (!completed) runCatching { resolver.delete(uri, null, null) }
             }
         }
 
         val base = appContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES) ?: appContext.filesDir
-        val directory = File(base, "XyDesk")
+        val directory = File(base, "RDPfread")
         if (!directory.exists() && !directory.mkdirs()) throw SaveVideoException()
         val destination = File(directory, fileName)
         try {
@@ -418,7 +418,7 @@ internal class RemoteScreenRecorder(
             destination.delete()
             throw SaveVideoException(error)
         }
-        return "Movies/XyDesk (folder aplikasi)/$fileName"
+        return "Movies/RDPfread (folder aplikasi)/$fileName"
     }
 
     /**
@@ -520,12 +520,12 @@ internal class RemoteScreenRecorder(
      * koleksinya yang berbeda (Music, bukan Movies).
      */
     private fun publishAudio(tempFile: File): String {
-        val fileName = "XyDesk-PC-${System.currentTimeMillis()}-audio.m4a"
+        val fileName = "RDPfread-PC-${System.currentTimeMillis()}-audio.m4a"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
                 put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp4")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/XyDesk")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/RDPfread")
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
             val resolver = appContext.contentResolver
@@ -538,18 +538,18 @@ internal class RemoteScreenRecorder(
                 val ready = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }
                 resolver.update(uri, ready, null, null)
                 completed = true
-                return "Music/XyDesk/$fileName"
+                return "Music/RDPfread/$fileName"
             } finally {
                 if (!completed) runCatching { resolver.delete(uri, null, null) }
             }
         }
         val base = appContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: appContext.filesDir
-        val directory = File(base, "XyDesk")
+        val directory = File(base, "RDPfread")
         if (!directory.exists() && !directory.mkdirs()) return "audio gagal disimpan"
         val destination = File(directory, fileName)
         return try {
             tempFile.copyTo(destination, overwrite = true)
-            "Music/XyDesk (folder aplikasi)/$fileName"
+            "Music/RDPfread (folder aplikasi)/$fileName"
         } catch (error: Exception) {
             destination.delete()
             "audio gagal disimpan"
@@ -1008,7 +1008,7 @@ internal class RemoteAudioRecorder(
     }
 
     fun start() {
-        val worker = Thread({ runLoop() }, "XyDesk-PC-AudioRec")
+        val worker = Thread({ runLoop() }, "RDPfread-PC-AudioRec")
         thread = worker
         worker.start()
     }

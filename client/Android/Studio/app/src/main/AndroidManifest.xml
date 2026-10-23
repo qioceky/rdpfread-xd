@@ -57,7 +57,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:label="Kirim ke PC (XyDesk)">
+            <intent-filter android:label="Kirim ke PC (RDPfread)">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
@@ -96,7 +96,7 @@
         <receiver
             android:name="id.rdpfread.remote.ui.XyQuickConnectWidgetProvider"
             android:exported="false"
-            android:label="XyDesk Quick Connect">
+            android:label="RDPfread Quick Connect">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

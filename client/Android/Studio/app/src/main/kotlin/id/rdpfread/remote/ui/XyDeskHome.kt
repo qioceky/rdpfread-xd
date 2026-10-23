@@ -515,7 +515,7 @@ fun XyDeskHome(
             ConnectionLog.formattedXyDeskLog(context.applicationContext, 100)
         }
         LogSheet(
-            title = xy("Log XyDesk", "XyDesk Log"),
+            title = xy("Log RDPfread", "RDPfread Log"),
             body = body,
             onDismiss = { showBoot = false },
         )
@@ -546,8 +546,8 @@ fun XyDeskHome(
         XyDialog(
             title = xy("Membangunkan PC (Wake-on-LAN)", "Waking PC (Wake-on-LAN)"),
             body = xy(
-                "Magic Packet sudah dikirim ke \"{0}\" ({1}:{2}). XyDesk sedang memantau kesiapan port RDP otomatis hingga 35 detik...",
-                "Magic Packet sent to \"{0}\" ({1}:{2}). XyDesk is automatically polling the RDP port for up to 35 seconds...",
+                "Magic Packet sudah dikirim ke \"{0}\" ({1}:{2}). RDPfread sedang memantau kesiapan port RDP otomatis hingga 35 detik...",
+                "Magic Packet sent to \"{0}\" ({1}:{2}). RDPfread is automatically polling the RDP port for up to 35 seconds...",
                 target.label ?: target.host,
                 target.host,
                 target.port,
@@ -564,7 +564,7 @@ fun XyDeskHome(
 
     if (confirmExitApp) {
         XyDialog(
-            title = xy("Keluar dari XyDesk Remote?", "Exit XyDesk Remote?"),
+            title = xy("Keluar dari RDPfread?", "Exit RDPfread?"),
             body = xy(
                 "Tutup aplikasi sekarang? Sesi yang sedang aktif di latar akan tetap berjalan jika keep-alive menyala.",
                 "Close the application now? Active background sessions will stay running while keep-alive is enabled.",
