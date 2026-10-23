@@ -1539,6 +1539,7 @@ fun XyDeskSessionScreen(
             }
             SessionControls(
                 deviceId = profile.id,
+                onSendComboKeys = { codes -> controller.sendCombo(codes) },
                 hostLabel = activeProfile.label ?: "${activeProfile.host}:${activeProfile.port}",
                 statusText = xy("Terhubung", "Connected"),
                 remoteSize = if (telemetry.width > 0) "${telemetry.width} x ${telemetry.height}" else xy("menunggu server", "waiting for server"),

@@ -169,6 +169,7 @@ fun SessionControls(
     onStickModeChange: (XyStickMode) -> Unit = {},
     onToggleRecording: () -> Unit = {},
     onScreenshot: () -> Unit,
+    onSendComboKeys: (List<Int>) -> Unit = {},
     onDisconnect: () -> Unit,
     onGoHome: () -> Unit = {},
     onPointerVisibilityChange: (Boolean) -> Unit,
@@ -681,26 +682,6 @@ fun SessionControls(
                         ) {
                             onToggleVoiceMic()
                         }
-                        val floatingChatHidden = InAppLiveNotificationBus.floatingOverlayHidden
-                        RailMenuItem(
-                            icon = XyIcons.Chat,
-                            label = if (floatingChatHidden) {
-                                xy("Tampilkan Floating Chat", "Show Floating Chat")
-                            } else {
-                                xy("Sembunyikan Floating Chat", "Hide Floating Chat")
-                            },
-                            active = !floatingChatHidden,
-                        ) {
-                            val nextHidden = !floatingChatHidden
-                            InAppLiveNotificationBus.setFloatingHidden(context, nextHidden)
-                            notice.show(
-                                if (nextHidden) {
-                                    xyNow("Floating Chat disembunyikan dari layar sesi", "Floating Chat hidden from session screen")
-                                } else {
-                                    xyNow("Floating Chat ditampilkan kembali", "Floating Chat restored")
-                                },
-                            )
-                        }
                         RailMenuItem(
                             icon = XyIcons.Monitor,
                             label = xy("Monitor & sesi", "Monitors & sessions"),
@@ -1152,6 +1133,7 @@ fun SessionControls(
                 recordingActive = recordingActive,
                 onToggleRecording = onToggleRecording,
                 onScreenshot = onScreenshot,
+                onSendComboKeys = onSendComboKeys,
                 onLockRemotePc = { confirmLockPc = true },
                 onActivatePrivacyCurtain = {
                     panelOpen = false
@@ -1728,6 +1710,7 @@ private fun SessionPanel(
     recordingActive: Boolean,
     onToggleRecording: () -> Unit,
     onScreenshot: () -> Unit,
+    onSendComboKeys: (List<Int>) -> Unit,
     onLockRemotePc: () -> Unit,
     onActivatePrivacyCurtain: () -> Unit,
     onDisconnect: () -> Unit,
@@ -1831,7 +1814,6 @@ private fun SessionPanel(
             }
 
             // Quick Control Center Bar (1-Tap Aksi Sesi Cepat)
-            val floatingChatHidden = InAppLiveNotificationBus.floatingOverlayHidden
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1839,6 +1821,38 @@ private fun SessionPanel(
                 horizontalArrangement = Arrangement.spacedBy(7.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                QuickActionPill(
+                    icon = XyIcons.Camera,
+                    label = xy("Screenshot", "Screenshot"),
+                    active = false,
+                    onClick = onScreenshot,
+                )
+                QuickActionPill(
+                    icon = XyIcons.Video,
+                    label = if (recordingActive) xy("Rekam: ON", "Rec: ON") else xy("Rekam", "Record"),
+                    active = recordingActive,
+                    onClick = onToggleRecording,
+                )
+                QuickActionPill(
+                    icon = XyIcons.Send,
+                    label = xy("Tempel Teks", "Paste Text"),
+                    active = false,
+                    onClick = onSendTextClick,
+                )
+                QuickActionPill(
+                    icon = XyIcons.Key,
+                    label = "Ctrl+Alt+Del",
+                    active = false,
+                    onClick = {
+                        onSendComboKeys(
+                            listOf(
+                                android.view.KeyEvent.KEYCODE_CTRL_LEFT,
+                                android.view.KeyEvent.KEYCODE_ALT_LEFT,
+                                android.view.KeyEvent.KEYCODE_FORWARD_DEL,
+                            ),
+                        )
+                    },
+                )
                 QuickActionPill(
                     icon = if (voiceMicEnabled) XyIcons.VolumeOn else XyIcons.VolumeOff,
                     label = if (voiceMicEnabled) "Mic: ON" else "Mic: OFF",
@@ -1850,15 +1864,6 @@ private fun SessionPanel(
                     label = if (showHudButtons) "HUD: ON" else "HUD: OFF",
                     active = showHudButtons,
                     onClick = { onShowHudButtonsChange(!showHudButtons) },
-                )
-                QuickActionPill(
-                    icon = XyIcons.Chat,
-                    label = if (!floatingChatHidden) "Chat: ON" else "Chat: OFF",
-                    active = !floatingChatHidden,
-                    onClick = {
-                        val nextHidden = !floatingChatHidden
-                        InAppLiveNotificationBus.setFloatingHidden(context, nextHidden)
-                    },
                 )
                 QuickActionPill(
                     icon = XyIcons.ScrollSlide,
@@ -2015,6 +2020,8 @@ private fun SessionPanel(
                                 onToggleRecording = onToggleRecording,
                                 coreInfo = coreInfo,
                                 onCopyCoreInfo = onCopyCoreInfo,
+                                pcConnectMode = pcConnectMode,
+                                hostLabel = hostLabel,
                             )
                         }
                         Spacer(Modifier.height(16.dp))
@@ -2074,20 +2081,20 @@ private fun ScreenTab(
     PanelSectionGrid(openKey = openKey, onOpenKey = onOpenKey) {
     section(
         "telemetri-kontrol-monitor-fisik-pc",
-        if (pcConnectMode) xy("Telemetri & Kontrol Monitor Fisik PC", "Live Telemetry & Physical PC Monitor")
-        else xy("Telemetri & Multi-Monitor / Sesi RDP", "Live Telemetry & Multi-Monitor / RDP Sessions"),
+        if (pcConnectMode) xy("Telemetri & Monitor PC", "PC Telemetry & Monitor")
+        else xy("Telemetri & Monitor", "Telemetry & Monitors"),
         advanced = true,
     ) {
             XyToggleRow(
-                title = xy("Status telemetri live (Update UI, Latency, Network)", "Live telemetry status (UI updates, latency, network)"),
+                title = xy("Telemetri live (latensi, jaringan, UI)", "Live telemetry (latency, network, UI)"),
                 checked = showTelemetryPill,
                 onCheckedChange = onShowTelemetryPillChange,
             )
             XyPillButton(
                 text = if (pcConnectMode) {
-                    xy("Monitor Fisik 1:1 & Mesin Direct Stream", "1:1 Physical Monitor & Direct Stream Engine")
+                    xy("Monitor Fisik 1:1", "1:1 Physical Monitor")
                 } else {
-                    xy("Grid Monitor & Sesi Multi-User / Konsol", "Active Monitors & Multi-User / Console Grid")
+                    xy("Grid Monitor & Sesi", "Monitor & Session Grid")
                 },
                 onClick = onOpenMonitorGrid,
                 icon = XyIcons.DualMonitor,
@@ -2607,8 +2614,16 @@ private fun SessionTab(
     onCopyCoreInfo: () -> Unit,
     openKey: String?,
     onOpenKey: (String?) -> Unit,
+    pcConnectMode: Boolean = false,
+    hostLabel: String = "",
 ) {
     PanelSectionGrid(openKey = openKey, onOpenKey = onOpenKey) {
+    if (!pcConnectMode) {
+        section("rdpfread", "RDPfread") {
+            RdpfreadSessionCard(hostLabel = hostLabel, notice = notice)
+        }
+    }
+
     section("keamanan-privasi-cepat",xy("Keamanan & Privasi Cepat", "Quick Security & Privacy")) {
             PanelHint(
                 xy(
@@ -2661,7 +2676,7 @@ private fun SessionTab(
             }
         }
 
-    section("utilitas-pro-makro-antiafk",xy("Utilitas Pro: Anti-AFK, Makro RP & Optimasi Engine", "Pro Utilities: Anti-AFK, RP Macros & Engine Boost")) {
+    section("utilitas-pro-makro-antiafk",xy("Utilitas Pro", "Pro Utilities")) {
             val proCtx = LocalContext.current
             val proPrefs = remember(proCtx) { proCtx.getSharedPreferences("xydesk.pro.session.engine", Context.MODE_PRIVATE) }
             var antiAfkActive by remember { mutableStateOf(proPrefs.getBoolean("anti_afk_$deviceId", false)) }
@@ -2732,35 +2747,11 @@ private fun SessionTab(
         }
 
     section("sesi",xy("Sesi", "Session")) {
-            val ctx = LocalContext.current
-            val floatingHidden = InAppLiveNotificationBus.floatingOverlayHidden
             PanelHint(
                 xy(
                     "Tombol bulat kanan bawah (ikon power) juga memutus — langsung kembali ke beranda setelah konfirmasi.",
                     "The bottom-right round button (power icon) also disconnects — returns straight to home after confirmation.",
                 ),
-            )
-            XyPillButton(
-                text = if (floatingHidden) {
-                    xy("Tampilkan Floating Chat Global", "Show Floating Global Chat")
-                } else {
-                    xy("Sembunyikan Floating Chat Global", "Hide Floating Global Chat")
-                },
-                onClick = {
-                    val nextHidden = !floatingHidden
-                    InAppLiveNotificationBus.setFloatingHidden(ctx, nextHidden)
-                    notice.show(
-                        if (nextHidden) {
-                            xyNow("Floating Chat disembunyikan dari layar sesi", "Floating Chat hidden from session screen")
-                        } else {
-                            xyNow("Floating Chat ditampilkan kembali", "Floating Chat restored")
-                        },
-                    )
-                },
-                icon = XyIcons.Chat,
-                primary = !floatingHidden,
-                compact = true,
-                modifier = Modifier.fillMaxWidth(),
             )
             XyPillButton(
                 xy("Ambil screenshot", "Take screenshot"),
@@ -3340,9 +3331,9 @@ private fun MonitorAndUserGridModal(
 
     XyOverlay(
         title = if (pcConnectMode) {
-            xy("Monitor Fisik 1:1 & Mesin Direct Stream", "1:1 Physical Monitor & Direct Stream Engine")
+            xy("Monitor Fisik 1:1", "1:1 Physical Monitor")
         } else {
-            xy("Monitor & Sesi Multi-User / Konsol RDP", "Active Monitors & Multi-User / Console Grid")
+            xy("Monitor & Sesi", "Monitors & Sessions")
         },
         maxWidth = 440.dp,
         onDismiss = onDismiss,

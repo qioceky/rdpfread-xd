@@ -38,6 +38,7 @@ import id.rdpfread.remote.core.ConnectionProfile
 import id.rdpfread.remote.security.CredentialVault
 import id.rdpfread.remote.ui.components.XyCard
 import id.rdpfread.remote.ui.components.XyField
+import id.rdpfread.remote.ui.components.XyNoticeState
 import id.rdpfread.remote.ui.components.XyPillButton
 import id.rdpfread.remote.ui.components.XySectionLabel
 import id.rdpfread.remote.ui.components.XySegmented
@@ -69,8 +70,8 @@ private const val PANEL_STATUS_URL =
     "https://raw.githubusercontent.com/qioceky/RDPfread/status/rdp-status.json"
 private const val PANEL_DISPATCH_URL =
     "https://api.github.com/repos/qioceky/RDPfread/actions/workflows/rdp.yml/dispatches"
-private const val VAULT_PANEL_TOKEN = "rdpfread.panel.github_token"
-private const val VAULT_PANEL_RDP_PASSWORD = "rdpfread.panel.rdp_password"
+internal const val VAULT_PANEL_TOKEN = "rdpfread.panel.github_token"
+internal const val VAULT_PANEL_RDP_PASSWORD = "rdpfread.panel.rdp_password"
 
 private val PANEL_RUNNERS =
     listOf("windows-2022", "windows-2025", "windows-latest", "ubuntu-24.04", "ubuntu-22.04", "ubuntu-latest")
@@ -87,6 +88,8 @@ internal data class RdpfreadNodeStatus(
     val dns: String,
     val user: String,
     val preset: String,
+    val optimasi: String,
+    val debloatLevel: String,
     val os: String,
     val runNumber: String,
     val runUrl: String,
@@ -122,7 +125,7 @@ private fun formatRemaining(expiresAtMs: Long): String {
     return if (h > 0) "$h jam $m mnt lagi" else "$m mnt lagi"
 }
 
-private suspend fun fetchRdpfreadStatus(): RdpfreadNodeStatus = withContext(Dispatchers.IO) {
+internal suspend fun fetchRdpfreadStatus(): RdpfreadNodeStatus = withContext(Dispatchers.IO) {
     val conn = (URL(PANEL_STATUS_URL).openConnection() as HttpURLConnection).apply {
         connectTimeout = 10_000
         readTimeout = 10_000
@@ -138,6 +141,12 @@ private suspend fun fetchRdpfreadStatus(): RdpfreadNodeStatus = withContext(Disp
             dns = root.optString("tailscale_dns"),
             user = root.optString("rdp_user"),
             preset = root.optString("preset"),
+            optimasi = root.optString("optimasi"),
+            debloatLevel = when {
+                root.has("debloat_full") -> "full"
+                root.has("debloat") -> "berat"
+                else -> "tidak"
+            },
             os = root.optString("os"),
             runNumber = root.optString("run_number"),
             runUrl = root.optString("run_url"),
@@ -150,7 +159,7 @@ private suspend fun fetchRdpfreadStatus(): RdpfreadNodeStatus = withContext(Disp
 }
 
 /** Kirim workflow_dispatch. Mengembalikan null bila sukses, pesan error bila gagal. */
-private suspend fun dispatchRdpfread(token: String, inputs: Map<String, String>): String? =
+internal suspend fun dispatchRdpfread(token: String, inputs: Map<String, String>): String? =
     withContext(Dispatchers.IO) {
         val body = JSONObject().apply {
             put("ref", "main")
@@ -575,6 +584,141 @@ internal fun RdpfreadPanelScreen(
             }
 
             Spacer(Modifier.height(8.dp))
+        }
+    }
+}
+
+/**
+ * Kartu RDPfread untuk tab Sesi di dalam sesi berjalan: status node dari
+ * branch `status` + dispatch estafet berikutnya tanpa keluar sesi.
+ * Pengaturan dispatch mengikuti sesi yang tercatat (runner/preset/debloat/
+ * optimasi), token dibaca dari [CredentialVault] yang sama dengan Panel
+ * RDPfread di Beranda.
+ */
+@Composable
+internal fun RdpfreadSessionCard(
+    hostLabel: String,
+    notice: XyNoticeState,
+) {
+    val context = LocalContext.current
+    val vault = remember { CredentialVault(context.applicationContext) }
+    val scope = rememberCoroutineScope()
+    var status by remember { mutableStateOf<RdpfreadNodeStatus?>(null) }
+    var failed by remember { mutableStateOf(false) }
+    var tick by remember { mutableIntStateOf(0) }
+    var dispatching by remember { mutableStateOf(false) }
+
+    LaunchedEffect(tick) {
+        runCatching { fetchRdpfreadStatus() }
+            .onSuccess { status = it; failed = false }
+            .onFailure { failed = true }
+    }
+
+    val st = status
+    Column {
+        when {
+            st == null && !failed -> Text(
+                xy("Memuat status RDPfread…", "Loading RDPfread status…"),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            st == null && failed -> {
+                Text(
+                    xy("Status RDPfread gagal dimuat.", "RDPfread status failed to load."),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Spacer(Modifier.height(8.dp))
+                XyPillButton(
+                    text = xy("Coba Lagi", "Retry"),
+                    onClick = { tick++ },
+                    primary = false,
+                    compact = true,
+                )
+            }
+            st != null -> {
+                val isThis = hostLabel.isNotBlank() &&
+                    (hostLabel == st.hostname || hostLabel == st.ip || hostLabel == st.dns)
+                StatusRow(
+                    xy("Node", "Node"),
+                    st.hostname +
+                        st.runNumber.takeIf { it.isNotBlank() }?.let { " (#$it)" }.orEmpty() +
+                        if (isThis) xy(" · sesi ini", " · this session") else "",
+                )
+                StatusRow(
+                    xy("Status", "Status"),
+                    when {
+                        st.live -> xy("AKTIF", "LIVE")
+                        st.active -> xy("BERAKHIR", "ENDED")
+                        else -> xy("MATI", "OFFLINE")
+                    },
+                )
+                if (st.active) {
+                    StatusRow(xy("Berakhir", "Ends"), formatWib(st.expiresAtMs) + " (${formatRemaining(st.expiresAtMs)})")
+                    StatusRow("Preset", st.preset)
+                }
+                Spacer(Modifier.height(10.dp))
+                val token = vault.get(VAULT_PANEL_TOKEN)?.trim().orEmpty()
+                if (token.isBlank()) {
+                    Text(
+                        xy(
+                            "Isi token GitHub di Panel RDPfread (Beranda) untuk bisa dispatch estafet dari sini.",
+                            "Fill in the GitHub token in the RDPfread Panel (Home) to dispatch the relay from here.",
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    XyPillButton(
+                        text = if (dispatching) xy("Mengirim…", "Sending…") else xy("Jalankan Estafet Berikutnya", "Run Next Relay"),
+                        onClick = {
+                            dispatching = true
+                            val isUbuntu = st.os.contains("Ubuntu", ignoreCase = true)
+                            val inputs = mutableMapOf(
+                                "runner" to if (isUbuntu) "ubuntu-24.04" else "windows-2022",
+                                "preset" to st.preset.ifBlank { "minimal" },
+                                "optimasi" to st.optimasi.ifBlank { "ya" },
+                                "perpanjang_otomatis" to "ya",
+                                "renewal" to "tidak",
+                            )
+                            if (isUbuntu) {
+                                inputs["linux_mode"] = "desktop"
+                            } else {
+                                inputs["debloat"] = st.debloatLevel
+                                inputs["fps"] = "standar"
+                            }
+                            scope.launch {
+                                val error = dispatchRdpfread(token, inputs)
+                                dispatching = false
+                                if (error == null) {
+                                    notice.show(
+                                        xyNow(
+                                            "Estafet terkirim — sesi berikutnya mengantre dari sesi ini.",
+                                            "Relay sent — the next session queues from this one.",
+                                        ),
+                                    )
+                                    tick++
+                                } else {
+                                    notice.show(xyNow("Dispatch gagal: ", "Dispatch failed: ") + error)
+                                }
+                            }
+                        },
+                        enabled = !dispatching,
+                        primary = false,
+                        compact = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        xy(
+                            "Pengaturan mengikuti sesi tercatat (preset ${st.preset.ifBlank { "minimal" }}, debloat ${st.debloatLevel}); antre, tidak membatalkan sesi ini.",
+                            "Settings follow the recorded session (preset ${st.preset.ifBlank { "minimal" }}, debloat ${st.debloatLevel}); it queues and does not cancel this session.",
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
     }
 }
