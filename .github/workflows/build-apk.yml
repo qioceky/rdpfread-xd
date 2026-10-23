@@ -92,7 +92,7 @@ jobs:
             "platform-tools" "platforms;android-37.2" "build-tools;37.0.0"
           echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
-      - name: Guard safety contracts (fork: upstream byte-baseline removed)
+      - name: "Guard safety contracts (fork baseline removed)"
         run: |
           python3 -m unittest discover -s ci -p test_candidate_safety.py
           python3 -m unittest discover -s ci -p test_windows_host_validation.py
