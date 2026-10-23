@@ -181,7 +181,7 @@ class XySessionService : Service() {
             Intent(this, XySessionService::class.java).setAction(ACTION_HOME),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val host = label ?: lastLabel ?: "XyDesk Remote"
+        val host = label ?: lastLabel ?: "RDPfread"
         val prefs = AppPrefs(this)
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             // Ikon app sendiri (mark monokrom) — dulu pakai
@@ -265,7 +265,7 @@ class XySessionService : Service() {
                 NotificationCompat.Builder(this, CHANNEL_ID)
                     .setSmallIcon(id.rdpfread.remote.R.drawable.ic_stat_xydesk)
                     .setContentTitle(xyNow("Sesi remote aktif", "Remote session active"))
-                    .setContentText("XyDesk Remote")
+                    .setContentText("RDPfread")
                     .setColor(NOTIF_ACCENT)
                     .setColorized(true)
                     .build(),
@@ -284,7 +284,7 @@ class XySessionService : Service() {
             info.versionCode.toLong()
         }
         "v${info.versionName} ($code)"
-    }.getOrDefault("XyDesk Remote")
+    }.getOrDefault("RDPfread")
 
     companion object {
         /** Warna aksen monokrom app, dipakai notifikasi berwarna. */

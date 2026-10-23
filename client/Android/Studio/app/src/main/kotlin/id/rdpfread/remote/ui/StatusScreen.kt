@@ -158,6 +158,6 @@ private fun String.stringField(key: String): String? =
 
 private fun copyToClipboard(context: Context, text: String) {
     val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
-    cm.setPrimaryClip(ClipData.newPlainText("XyDesk Remote diagnostics", text))
+    cm.setPrimaryClip(ClipData.newPlainText("RDPfread XD diagnostics", text))
 }
 

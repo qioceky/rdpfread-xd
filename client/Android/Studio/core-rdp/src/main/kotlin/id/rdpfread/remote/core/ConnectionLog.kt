@@ -254,7 +254,7 @@ object ConnectionLog {
             .replace("Detail FreeRDP:", "Detail XyRDP Engine:")
             .replace("FreeRDP", "XyRDP Engine")
             .replace("APP: diagnostics initialized;", "[Aplikasi] Diagnostik XyDesk aktif ·")
-            .replace("APP: entering GlobalApp.onCreate", "[Aplikasi] Memulai mesin XyDesk Remote")
+            .replace("APP: entering GlobalApp.onCreate", "[Aplikasi] Memulai mesin RDPfread")
             .replace("APP: GlobalApp.onCreate completed", "[Aplikasi] Mesin XyDesk siap digunakan")
             .replace("SES: activity created", "[Sesi] Layar sesi remote dibuka")
             .replace("SES: manager+controller ok, sink set", "[Sesi] Pengendali layar & input siap")
