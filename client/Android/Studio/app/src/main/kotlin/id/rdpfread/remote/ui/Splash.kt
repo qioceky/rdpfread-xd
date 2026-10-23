@@ -3,14 +3,17 @@ package id.rdpfread.remote.ui
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -21,24 +24,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import id.rdpfread.remote.R
 import id.rdpfread.remote.ui.theme.XyDisplay
 import id.rdpfread.remote.ui.theme.XyThemeState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * Splash screen XyDesk Remote minimalis murni (Ronde 64):
- * Cukup menampilkan tipografi "XYDESK REMOTE" yang tajam, bersih, dan elegan.
+ * Splash screen RDPfread XD (soft neobrutalism): kartu ikon launcher kuning
+ * di atas kertas, wordmark "RDPfread", bilah progres kuning. Mekanik tampil
+ * sekali saat cold start sama seperti sebelumnya.
  */
 @Composable
 internal fun XySplashScreen(
@@ -89,39 +91,17 @@ internal fun XySplashScreen(
         }
     }
 
-    val bgBrush = if (dark) {
-        Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF05070B),
-                Color(0xFF0A0E17),
-                Color(0xFF05070B),
-            ),
-        )
-    } else {
-        Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFFFFFFFF),
-                Color(0xFFF8FAFC),
-                Color(0xFFFFFFFF),
-            ),
-        )
-    }
-
-    val primaryWordColor = if (dark) Color(0xFFF8FAFC) else Color(0xFF090D16)
-    val accentWordBrush = if (dark) {
-        Brush.linearGradient(
-            colors = listOf(Color(0xFFE2E8F0), Color(0xFF94A3B8)),
-        )
-    } else {
-        Brush.linearGradient(
-            colors = listOf(Color(0xFF334155), Color(0xFF64748B)),
-        )
-    }
+    val paper = Color(0xFFFFFDF7)
+    val ink = Color(0xFF161616)
+    val yellow = Color(0xFFFFD02E)
+    val bg = if (dark) Color(0xFF14161A) else paper
+    val wordColor = if (dark) paper else ink
+    val subColor = if (dark) paper.copy(alpha = 0.55f) else ink.copy(alpha = 0.55f)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgBrush),
+            .background(bg),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -132,53 +112,50 @@ internal fun XySplashScreen(
                     scaleY = scale.value
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(
-                            SpanStyle(
-                                color = primaryWordColor,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = 3.2.sp,
-                            ),
-                        ) {
-                            append("XYDESK ")
-                        }
-                        withStyle(
-                            SpanStyle(
-                                brush = accentWordBrush,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 4.5.sp,
-                            ),
-                        ) {
-                            append("REMOTE")
-                        }
-                    },
-                    style = TextStyle(
-                        fontFamily = XyDisplay,
-                        fontSize = 26.sp,
-                    ),
-                )
-            }
             Box(
                 modifier = Modifier
-                    .width((64f * barWidth.value).dp)
-                    .height(2.dp)
+                    .size(96.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(yellow)
+                    .border(3.dp, ink, RoundedCornerShape(24.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(6.dp),
+                )
+            }
+            Text(
+                text = "RDPfread",
+                style = TextStyle(
+                    fontFamily = XyDisplay,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 1.2.sp,
+                    color = wordColor,
+                ),
+            )
+            Text(
+                text = "REMOTE DESKTOP",
+                style = TextStyle(
+                    fontFamily = XyDisplay,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 4.5.sp,
+                    color = subColor,
+                ),
+            )
+            Box(
+                modifier = Modifier
+                    .width((72f * barWidth.value).dp)
+                    .height(4.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                primaryWordColor.copy(alpha = 0.55f),
-                                Color.Transparent,
-                            ),
-                        ),
-                    ),
+                    .background(yellow),
             )
         }
     }
