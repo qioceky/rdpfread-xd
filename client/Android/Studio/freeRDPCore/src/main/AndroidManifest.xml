@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Redirect folder HP jadi drive di remote. Tanpa izin ini app tetap
+         jalan (pakai folder milik app); dengan izin ini seluruh isi
+         /storage/emulated/0 bisa dibaca dari sesi RDP. -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <application
+        android:theme="@style/Theme.Main"
+        android:resizeableActivity="true"
+        >
+        <meta-data android:name="com.samsung.android.keepalive.density" android:value="true"/>
+        <!-- XyDesk (ronde 48): komponen UI warisan FreeRDP (ShortcutsActivity,
+             SessionActivity, KeyboardAccessibilityService dengan
+             BIND_ACCESSIBILITY_SERVICE) tidak dipakai XyDesk Remote dan
+             dihapus dari manifest. Izin BIND_ACCESSIBILITY_SERVICE pada APK
+             sideload memicu blokir keras Google Play Protect Enhanced Fraud
+             Protection (tanpa tombol "Tetap instal" / "Scan"). -->
+
+        <provider
+            android:name=".utils.ClipboardImageProvider"
+            android:authorities="com.freerdp.freerdpcore.clipboard"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+    </application>
+
+</manifest>

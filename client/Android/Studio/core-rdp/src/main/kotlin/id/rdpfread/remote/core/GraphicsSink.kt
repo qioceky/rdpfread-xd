@@ -1,0 +1,30 @@
+package id.rdpfread.remote.core
+
+/**
+ * Sink event grafik dari inti FreeRDP (dipanggil di thread RDP).
+ *
+ * Implementasi XyDesk (M2) = [id.rdpfread.remote.ui.SessionSurfaceController]
+ * yang meneruskan ke `SessionView` (render) + `LibFreeRDP.updateGraphics`
+ * (copy piksel ke bitmap permukaan) — semantik identik dengan jalur M0
+ * (`SessionActivity.OnGraphicsUpdate/OnGraphicsResize`).
+ *
+ * Thread: semua metode bisa dipanggil dari thread RDP native — implementor
+ * wajib post modifikasi View ke main thread.
+ */
+interface GraphicsSink {
+    /** Dipanggil tepat saat sesi native dibuat agar sink langsung memegang `inst` sebelum callback grafik pertama. */
+    fun onSessionInstanceBound(inst: Long) {}
+
+    /** Region gambar berubah (piksel belum di-copy — sink harus panggil updateGraphics). */
+    fun onGraphicsUpdate(x: Int, y: Int, width: Int, height: Int) {}
+
+    /** Desktop remote resize — bitmap permukaan harus diganti. */
+    fun onGraphicsResize(width: Int, height: Int, bpp: Int) {}
+
+    /** Kursor remote (pixels null/ukuran 0 = reset). */
+    fun onPointerSet(pixels: IntArray?, width: Int, height: Int, hotX: Int, hotY: Int) {}
+
+    fun onPointerSetNull() {}
+
+    fun onPointerSetDefault() {}
+}
