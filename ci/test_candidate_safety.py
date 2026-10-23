@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class CandidateSafetyTest(unittest.TestCase):
     def test_android_direct_transport_policy_guards_entrypoints(self):
-        core = ROOT / 'client/Android/Studio/core-rdp/src/main/kotlin/id/xydesk/remote/core'
+        core = ROOT / 'client/Android/Studio/core-rdp/src/main/kotlin/id/rdpfread/remote/core'
         policy = (core / 'LegacyDirectTransportPolicy.kt').read_text()
         self.assertIn('fun mayStart(): Boolean', policy)
         for name in ['XyDirectConsoleStreamClient.kt', 'XyRawGameInputBridge.kt', 'QuicAudioBridge.kt']:
@@ -17,7 +17,7 @@ class CandidateSafetyTest(unittest.TestCase):
         self.assertLess(discovery.index('LegacyDirectTransportPolicy.mayStart()'), discovery.index('DatagramSocket('))
 
     def test_audio_bridge_respects_policy_on_mic_toggle(self):
-        audio = (ROOT / 'client/Android/Studio/core-rdp/src/main/kotlin/id/xydesk/remote/core/QuicAudioBridge.kt').read_text()
+        audio = (ROOT / 'client/Android/Studio/core-rdp/src/main/kotlin/id/rdpfread/remote/core/QuicAudioBridge.kt').read_text()
         setter = audio.split('fun setVoiceMicEnabled(enabled: Boolean) {', 1)[1].split('fun start()', 1)[0]
         self.assertLess(setter.index('LegacyDirectTransportPolicy.mayStart()'), setter.index('micActive = enabled'))
         self.assertIn('micActive = false', setter)
