@@ -101,7 +101,7 @@ import kotlin.math.roundToInt
  *     Terhubung langsung ke `XyDeskRemoteHost-Standalone.exe` di sesi konsol
  *     fisik Windows (`SM_REMOTESESSION == 0`, bebas deteksi RDP anti-cheat)
  *     dengan injeksi hardware `SendInput(MOUSEEVENTF_MOVE)` 120Hz untuk Game FPS.
- *  2) **Hub WebRTC (`signal.xydesk.my.id`)**:
+ *  2) **Hub WebRTC (dinonaktifkan di fork ini)**:
  *     Pairing ID host 9 digit + PIN 6 digit → video WebRTC + DataChannel `input`.
  */
 class PcStreamSessionActivity : ComponentActivity() {

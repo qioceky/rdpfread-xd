@@ -239,7 +239,7 @@ class XyHubAuth(
         URLEncoder.encode(value, StandardCharsets.UTF_8.name())
 
     companion object {
-        const val DEFAULT_BASE_URL = "https://signal.xydesk.my.id"
+        const val DEFAULT_BASE_URL = "" // RDPfread: hub remote upstream dinonaktifkan; PC Stream memakai alamat eksplisit/LAN
         private const val DEFAULT_CONNECT_TIMEOUT_MS = 8_000
         private const val DEFAULT_READ_TIMEOUT_MS = 8_000
         private const val MAX_REQUEST_BYTES = 8_192

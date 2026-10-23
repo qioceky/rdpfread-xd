@@ -208,7 +208,7 @@ jobs:
         if: steps.tagcheck.outputs.tagged != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: xydesk-remote-debug-per-abi
+          name: rdpfread-xd-debug-per-abi
           path: client/Android/Studio/app/build/outputs/apk/debug/*.apk
           retention-days: 7
 
@@ -379,12 +379,12 @@ jobs:
         working-directory: client/Android/Studio/app/build/outputs/apk/release
         run: |
           set -euo pipefail
-          mv app-armeabi-v7a-release.apk XyDesk-Remote-armeabi-v7a.apk
-          mv app-arm64-v8a-release.apk XyDesk-Remote-arm64-v8a.apk
-          mv app-x86_64-release.apk XyDesk-Remote-x86_64.apk
+          mv app-armeabi-v7a-release.apk RDPfread-XD-armeabi-v7a.apk
+          mv app-arm64-v8a-release.apk RDPfread-XD-arm64-v8a.apk
+          mv app-x86_64-release.apk RDPfread-XD-x86_64.apk
           # Universal (semua ABI dalam satu APK) — dibangun sejak BUILD_UNIVERSAL=true.
           if [ -f app-universal-release.apk ]; then
-            mv app-universal-release.apk XyDesk-Remote-universal.apk
+            mv app-universal-release.apk RDPfread-XD-universal.apk
           fi
           ls -lh XyDesk-Remote-*.apk
       - name: Nama akhir APK untuk user (32bit/64bit)
@@ -393,11 +393,11 @@ jobs:
           set -euo pipefail
           # Nama internal per-ABI dipakai sampai verifikasi tanda tangan selesai;
           # nama yang dipublikasikan mengikuti bit arsitektur yang mudah dipahami.
-          mv XyDesk-Remote-armeabi-v7a.apk XyDesk-Remote32bit.apk
-          mv XyDesk-Remote-arm64-v8a.apk XyDesk-Remote64bit.apk
-          mv XyDesk-Remote-x86_64.apk XyDesk-Remote64bit-x86.apk
-          if [ -f XyDesk-Remote-universal.apk ]; then
-            mv XyDesk-Remote-universal.apk XyDesk-RemoteUniversal.apk
+          mv RDPfread-XD-armeabi-v7a.apk RDPfread-XD32bit.apk
+          mv RDPfread-XD-arm64-v8a.apk RDPfread-XD64bit.apk
+          mv RDPfread-XD-x86_64.apk RDPfread-XD64bit-x86.apk
+          if [ -f RDPfread-XD-universal.apk ]; then
+            mv RDPfread-XD-universal.apk RDPfread-XDUniversal.apk
           fi
           ls -lh XyDesk-Remote*.apk
       - name: Tanda tangani ulang APK dengan skema V1 + V2 (deterministik)
@@ -416,10 +416,10 @@ jobs:
           APK_SIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner"
           for abi in armeabi-v7a arm64-v8a x86_64 universal; do
             case "$abi" in
-              armeabi-v7a) apk="XyDesk-Remote32bit.apk" ;;
-              arm64-v8a)   apk="XyDesk-Remote64bit.apk" ;;
-              universal)   apk="XyDesk-RemoteUniversal.apk" ;;
-              *)           apk="XyDesk-Remote64bit-x86.apk" ;;
+              armeabi-v7a) apk="RDPfread-XD32bit.apk" ;;
+              arm64-v8a)   apk="RDPfread-XD64bit.apk" ;;
+              universal)   apk="RDPfread-XDUniversal.apk" ;;
+              *)           apk="RDPfread-XD64bit-x86.apk" ;;
             esac
             if [ "$abi" = "universal" ] && [ ! -f "$apk" ]; then
               echo "Universal APK tidak dibangun (BUILD_UNIVERSAL=false) — dilewati."
@@ -474,25 +474,24 @@ jobs:
           fi
 
           {
-            echo "XyDesk Remote — APK signer verification"
-            echo "All v1.0.2 public ABI assets are checked against their published SHA-256."
+            echo "RDPfread XD — APK signer verification"
+            echo "Semua APK rilis diperiksa V1 + V2 dan konsistensi signer antar-ABI."
             echo "All ${release_tag} APKs must verify with V1 + V2 and retain the same signer."
             echo "V1/JAR diuji dengan --min-sdk-version 23: untuk APK minSdk 24+ apksigner"
             echo "melaporkan v1=false walau blok JAR ada, karena platform mengabaikan V1."
             echo
           } > "$REPORT"
 
-          # Baseline signer SHA-256 resmi sejak v1.0.2 (rilis lama telah dibersihkan
-          # sehingga verifikasi memakai pin sertifikat SHA-256 langsung).
-          baseline_cert="8429f689e7c3c6a0a44cb924206d56d5a2dccbd6c88cb900835c1901ad219652"
-          printf 'Baseline signer SHA-256 (pinned v1.0.2+): %s\n\n' "$baseline_cert" >> "$REPORT"
+          # RDPfread XD: tidak ada pin sertifikat upstream. Konsistensi signer
+          # antar-ABI diperiksa terhadap APK pertama yang diverifikasi.
+          printf 'Signer check: semua ABI harus satu sertifikat (dibandingkan antar-APK).\n\n' >> "$REPORT"
 
           for abi in armeabi-v7a arm64-v8a x86_64 universal; do
             case "$abi" in
-              armeabi-v7a) apk="$OUT/XyDesk-Remote32bit.apk" ;;
-              arm64-v8a)   apk="$OUT/XyDesk-Remote64bit.apk" ;;
-              universal)   apk="$OUT/XyDesk-RemoteUniversal.apk" ;;
-              *)           apk="$OUT/XyDesk-Remote64bit-x86.apk" ;;
+              armeabi-v7a) apk="$OUT/RDPfread-XD32bit.apk" ;;
+              arm64-v8a)   apk="$OUT/RDPfread-XD64bit.apk" ;;
+              universal)   apk="$OUT/RDPfread-XDUniversal.apk" ;;
+              *)           apk="$OUT/RDPfread-XD64bit-x86.apk" ;;
             esac
             if [ "$abi" = "universal" ] && [ ! -f "$apk" ]; then
               echo "Universal APK tidak ada — verifikasi dilewati."
@@ -522,8 +521,14 @@ jobs:
               exit 1
             fi
             cert="$(printf '%s\n' "$verification" | awk -F': *' '/certificate SHA-256 digest:/ { gsub(/[^0-9a-fA-F]/, "", $NF); print tolower($NF); exit }')"
-            if [ -z "$cert" ] || [ "$cert" != "$baseline_cert" ]; then
-              echo "::error::Signer $abi tidak sama dengan sertifikat v1.0.2."
+            if [ -z "$cert" ]; then
+              echo "::error::Signer $abi tidak terbaca."
+              exit 1
+            fi
+            if [ -z "$baseline_cert" ]; then
+              baseline_cert="$cert"
+            elif [ "$cert" != "$baseline_cert" ]; then
+              echo "::error::Signer $abi berbeda dari ABI lain dalam rilis ini."
               exit 1
             fi
             apk_sha="$(sha256sum "$apk" | awk '{print $1}')"
@@ -538,10 +543,10 @@ jobs:
         run: |
           set -euo pipefail
           python3 "$GITHUB_WORKSPACE/ci/verify_android_apks.py" \
-            app/build/outputs/apk/release/XyDesk-Remote32bit.apk \
-            app/build/outputs/apk/release/XyDesk-Remote64bit.apk \
-            app/build/outputs/apk/release/XyDesk-Remote64bit-x86.apk \
-            app/build/outputs/apk/release/XyDesk-RemoteUniversal.apk
+            app/build/outputs/apk/release/RDPfread-XD32bit.apk \
+            app/build/outputs/apk/release/RDPfread-XD64bit.apk \
+            app/build/outputs/apk/release/RDPfread-XD64bit-x86.apk \
+            app/build/outputs/apk/release/RDPfread-XDUniversal.apk
       - name: Build and verify single static Windows Host Agent
         run: |
           set -euo pipefail
@@ -558,7 +563,7 @@ jobs:
       - name: Upload signed APKs & Windows Host Agent for publishing
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: xydesk-remote-release-apks
+          name: rdpfread-xd-release-apks
           path: |
             client/Android/Studio/app/build/outputs/apk/release/*.apk
             client/Android/Studio/app/build/outputs/apk/release/XyDesk-Remote-Host-Agent-win64.zip
@@ -591,7 +596,7 @@ jobs:
       - name: Download signed APKs
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: xydesk-remote-release-apks
+          name: rdpfread-xd-release-apks
           path: release-apks
       - name: Buat SHA256SUMS.txt (integritas aset rilis)
         run: |

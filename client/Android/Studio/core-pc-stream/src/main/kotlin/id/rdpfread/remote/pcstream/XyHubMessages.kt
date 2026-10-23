@@ -5,7 +5,7 @@ import org.json.JSONObject
 import java.security.SecureRandom
 
 /**
- * Protokol teks hub signaling **host XyDesk produksi** (`signal.xydesk.my.id`,
+ * Protokol teks hub signaling **host upstream** (warisan protokol,
  * repo saudara `xykal/XyDesk`: `cloudflare/src/worker.js` + `hub.js`, klien
  * referensi `android-native/.../net/Signaling.kt`, `docs/PROTOCOL.md`).
  *
