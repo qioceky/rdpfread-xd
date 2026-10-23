@@ -130,6 +130,9 @@ private sealed interface XyRoute {
 
     /** Dashboard pengaturan — dipetakan ke tab nav [XyTab.PROFILE]. */
     data object Profile : XyRoute
+
+    /** Panel RDPfread: dispatch + status + sambung sesi GitHub Actions. */
+    data object RdpfreadPanel : XyRoute
 }
 
 /**
@@ -392,6 +395,7 @@ fun XyDeskHome(
                         onAddPcQuick = { route = XyRoute.EditDevice(null, pcQuickMode = true) },
                         onOpenPcStream = { context.startActivity(PcStreamSessionActivity.intent(context)) },
                         onOpenSshTerminal = { route = XyRoute.SshTerminal },
+                        onOpenPanel = { route = XyRoute.RdpfreadPanel },
                         onEdit = {
                             route = XyRoute.EditDevice(
                                 it,
@@ -442,6 +446,12 @@ fun XyDeskHome(
                     onShowLog = { showBoot = true },
                 )
 
+                XyRoute.RdpfreadPanel -> RdpfreadPanelScreen(
+                    onBack = { route = XyRoute.Devices },
+                    onConnect = { profile -> connect(profile) },
+                    showNotice = { msg -> notice.show(msg) },
+                )
+
                 XyRoute.Section -> Unit
             }
             }
@@ -449,7 +459,7 @@ fun XyDeskHome(
 
                 // Nav bawah disembunyikan saat form tambah/ubah perangkat, Chat Global,
                 // atau Terminal SSH terbuka supaya layar itu tetap penuh dan composer tidak tertutup.
-                if (route !is XyRoute.EditDevice && route != XyRoute.SshTerminal) {
+                if (route !is XyRoute.EditDevice && route != XyRoute.SshTerminal && route != XyRoute.RdpfreadPanel) {
                     // Dock melayang (macOS/iOS style): tanpa garis pemisah lagi —
                     // kapsulnya sudah dipisahkan bayangan dari konten.
                     XyBottomNav(
@@ -1010,6 +1020,7 @@ private fun DevicesScreen(
     onAddPcQuick: () -> Unit,
     onOpenPcStream: () -> Unit,
     onOpenSshTerminal: () -> Unit,
+    onOpenPanel: () -> Unit,
     onEdit: (ConnectionProfile) -> Unit,
     onConnect: (ConnectionProfile) -> Unit,
     onWakeConnect: (ConnectionProfile) -> Unit,
@@ -1095,6 +1106,37 @@ private fun DevicesScreen(
                     )
                 },
             )
+
+            XyCard(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .clickable { onOpenPanel() },
+                padding = 14.dp,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            xy("Panel RDPfread", "RDPfread Panel"),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            xy(
+                                "Dispatch, status live & sambung sesi RDPfread",
+                                "Dispatch, live status & connect to RDPfread sessions",
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    XyIconPill(
+                        XyIcons.ChevronRight,
+                        onOpenPanel,
+                        flat = true,
+                        contentDescription = xy("Buka Panel RDPfread", "Open RDPfread Panel"),
+                    )
+                }
+            }
 
             if (favorites.isEmpty()) {
                 Box(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp), contentAlignment = Alignment.TopCenter) {
