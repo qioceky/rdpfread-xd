@@ -26,6 +26,6 @@ are preserved (LICENSE, XYDESK-REMOTE-NOTICE.md). Not affiliated with XyVerse.
 - Encrypted on-device credential storage; no account, no telemetry
 
 ## Notes
-- PC Stream hub defaults in `core-pc-stream` still name upstream workers but
-  are unreachable from the app UI in this fork (global-ID flows stubbed).
+- PC Stream hub defaults in `core-pc-stream` were emptied in the post-release
+  tidy commit (no upstream worker is contacted by default).
 - Host agent sources remain under `host-agent/` for future PC Stream use.
