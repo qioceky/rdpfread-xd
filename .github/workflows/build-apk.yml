@@ -222,6 +222,15 @@ jobs:
         if: steps.tagcheck.outputs.tagged != 'true'
         working-directory: client/Android/Studio
         run: find app/build/outputs -name "*.apk" -exec ls -lh {} \;
+      - name: Cetak sidik jari penanda tangan APK (bukti kunci tetap)
+        if: steps.tagcheck.outputs.tagged != 'true'
+        working-directory: client/Android/Studio
+        run: |
+          APKSIGNER="$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          for apk in app/build/outputs/apk/debug/*.apk; do
+            echo "== $apk"
+            "$APKSIGNER" verify --print-certs "$apk" | grep -i "SHA-256" || true
+          done
       - name: Upload debug APKs (per ABI)
         if: steps.tagcheck.outputs.tagged != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
