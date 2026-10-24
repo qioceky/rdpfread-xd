@@ -40,6 +40,18 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
+        // Keystore debug TETAP (dari secret CI, dipulihkan ke path env
+        // DEBUG_STORE_FILE). AGP 9 di runner GitHub terbukti TIDAK memakai
+        // ~/.android/debug.keystore bawaan (sertifikat build debug berganti
+        // acak tiap run -> update di tempat ditolak Android), jadi debug
+        // diarahkan eksplisit ke file ini bila env tersedia.
+        pinnedDebug {
+            storeFile file(System.getenv('DEBUG_STORE_FILE') ?: '/nonexistent/debug-pinned.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeType "jks"
+        }
     }
 
     buildTypes {
@@ -53,6 +65,9 @@ android {
         }
         debug {
             jniDebuggable true
+            if (System.getenv('DEBUG_STORE_FILE')) {
+                signingConfig signingConfigs.pinnedDebug
+            }
         }
     }
     compileOptions {

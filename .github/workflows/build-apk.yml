@@ -209,6 +209,7 @@ jobs:
           mkdir -p "$HOME/.android"
           printf '%s' "$DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/debug.keystore"
           test -s "$HOME/.android/debug.keystore"
+          echo "DEBUG_STORE_FILE=$HOME/.android/debug.keystore" >> "$GITHUB_ENV"
           echo "Keystore debug tetap dipulihkan ($(stat -c%s "$HOME/.android/debug.keystore") byte)."
       - name: Unit test JVM (core-rdp + core-pc-stream)
         if: steps.tagcheck.outputs.tagged != 'true'
