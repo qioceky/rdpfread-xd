@@ -192,6 +192,24 @@ jobs:
           # pkg-config: disyaratkan ExternalFreeRDP.cmake
           # nasm: OpenH264 mem-compile cpuid.asm untuk target x86/x86_64
           timeout 600 sudo apt-get $APT_OPTS install -y -qq pkg-config nasm
+      # Keystore debug TETAP dari secret: tanpa ini, tiap runner membuat
+      # debug.keystore acak baru dan APK hasil build TIDAK BISA menimpa
+      # instalasi sebelumnya (INSTALL_FAILED_UPDATE_INCOMPATIBLE — terbukti
+      # di lapangan 2026-10-24: sertifikat v0.1.0/v0.2.0/v0.3.0 semua beda).
+      - name: Pulihkan keystore debug tetap dari secret
+        if: steps.tagcheck.outputs.tagged != 'true'
+        env:
+          DEBUG_KEYSTORE_BASE64: ${{ secrets.DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEBUG_KEYSTORE_BASE64:-}" ]; then
+            echo "::error::Secret DEBUG_KEYSTORE_BASE64 belum diisi — build debug akan bertanda tangan acak dan tidak bisa update di tempat."
+            exit 1
+          fi
+          mkdir -p "$HOME/.android"
+          printf '%s' "$DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/debug.keystore"
+          test -s "$HOME/.android/debug.keystore"
+          echo "Keystore debug tetap dipulihkan ($(stat -c%s "$HOME/.android/debug.keystore") byte)."
       - name: Unit test JVM (core-rdp + core-pc-stream)
         if: steps.tagcheck.outputs.tagged != 'true'
         working-directory: client/Android/Studio
